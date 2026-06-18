@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Button from "./Button";
 
 export interface ReportTemplate {
   id: string;
@@ -102,21 +103,21 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
                 className="rounded-lg border border-card-border bg-background px-3 py-1.5 text-sm outline-none focus:border-accent"
                 autoFocus
               />
-              <button
+              <Button
                 onClick={handleCreateTemplate}
                 className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-accent-foreground hover:opacity-90"
               >
                 Save
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setIsCreating(false)}
                 className="rounded-lg bg-muted-bg px-3 py-1.5 text-xs font-semibold text-muted hover:opacity-95"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           ) : (
-            <button
+            <Button
               onClick={() => setIsCreating(true)}
               className="flex items-center gap-1.5 rounded-lg border border-card-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-muted-bg"
             >
@@ -124,7 +125,7 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               New Template
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -133,7 +134,7 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
         {/* Template List */}
         <div className="flex flex-col gap-2 border-r border-card-border pr-0 md:pr-4">
           <span className="text-xs font-bold uppercase tracking-wider text-muted">Active Templates</span>
-          <div className="flex flex-col gap-1.5 max-h-[220px] overflow-y-auto pr-1">
+          <div className="flex flex-col gap-1.5 max-h-55 overflow-y-auto pr-1">
             {templates.map((t) => (
               <div
                 key={t.id}
@@ -159,7 +160,7 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
                   <span className="truncate text-sm">{t.name}</span>
                 </div>
                 {templates.length > 1 && (
-                  <button
+                  <Button
                     onClick={(e) => {
                       e.stopPropagation();
                       handleDeleteTemplate(t.id);
@@ -169,7 +170,7 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
                     <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                  </button>
+                  </Button>
                 )}
               </div>
             ))}
@@ -179,13 +180,13 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
             <span className="text-xs font-bold uppercase tracking-wider text-muted mb-2 block">Quick Presets</span>
             <div className="flex flex-wrap gap-1.5">
               {PRESET_TEMPLATES.map((p, idx) => (
-                <button
+                <Button
                   key={idx}
                   onClick={() => loadPreset(p)}
-                  className="rounded-full bg-muted-bg hover:bg-muted/20 px-2.5 py-1 text-2xs text-muted hover:text-foreground font-medium transition-colors"
+                  className="rounded-full bg-muted-bg hover:bg-muted/20 px-2.5 py-1 text-2xs text-muted hover:text-foreground font-medium transition-colors animate-none"
                 >
                   + {p.name.split(" ")[0]}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -217,7 +218,7 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-muted uppercase tracking-wider mb-1.5 flex justify-between items-center">
+              <label className="text-xs font-bold text-muted uppercase tracking-wider mb-1.5 flex justify-between items-center">
                 <span>Template Format</span>
                 <span className="text-2xs text-accent normal-case font-normal">Auto-saves changes</span>
               </label>

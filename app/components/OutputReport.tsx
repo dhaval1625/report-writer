@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Button from "./Button";
 
 interface OutputReportProps {
   title: string;
@@ -34,7 +35,7 @@ export default function OutputReport({ title, generatedText, onTextChange }: Out
     }`}>
       <div className="flex items-center justify-between mb-3.5 pb-2 border-b border-card-border/50">
         <span className="text-sm font-semibold tracking-tight text-foreground">{title}</span>
-        <button
+        <Button
           onClick={handleCopy}
           className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all duration-200 ${
             copied
@@ -57,7 +58,7 @@ export default function OutputReport({ title, generatedText, onTextChange }: Out
               Copy Report
             </>
           )}
-        </button>
+        </Button>
       </div>
 
       <textarea

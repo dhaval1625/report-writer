@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import TemplateEditor, { ReportTemplate } from "./TemplateEditor";
 import OutputReport from "./OutputReport";
+import Button from "./Button";
 import { parseUpdatePoints, scanInfoPlaceholders, generateReport } from "../utils/reportParser";
 
 const DEFAULT_TEMPLATES: ReportTemplate[] = [
@@ -148,10 +149,10 @@ export default function ReportWriter() {
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-card-border pb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <div className="h-6 w-6 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-black text-xs shadow-md">
+            <div className="h-6 w-6 rounded-lg bg-linear-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-white font-black text-xs shadow-md">
               ⚡
             </div>
-            <h1 className="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-foreground via-foreground/90 to-muted bg-clip-text text-transparent">
+            <h1 className="text-2xl font-extrabold tracking-tight bg-linear-to-r from-foreground via-foreground/90 to-muted bg-clip-text text-transparent">
               Report Writer
             </h1>
           </div>
@@ -237,7 +238,7 @@ export default function ReportWriter() {
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold uppercase tracking-wider text-muted">Generated Reports</h3>
             {Object.keys(editedReports).length > 0 && (
-              <button
+              <Button
                 onClick={handleRegenerateAll}
                 className="text-xs font-semibold text-accent hover:underline flex items-center gap-1"
               >
@@ -245,7 +246,7 @@ export default function ReportWriter() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H18" />
                 </svg>
                 Reset Custom Edits
-              </button>
+              </Button>
             )}
           </div>
 
