@@ -9,6 +9,7 @@
   --accent-foreground: #ffffff;
   --muted: #71717a;
   --muted-bg: #f4f4f5;
+  color-scheme: light;
 }
 
 @theme inline {
@@ -34,6 +35,7 @@
     --accent-foreground: #ffffff;
     --muted: #a1a1aa;
     --muted-bg: #27272a;
+    color-scheme: dark;
   }
 }
 
@@ -59,3 +61,11 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--muted);
 }
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+textarea::-webkit-resizer {
+  display: none !important;
+}
+
+

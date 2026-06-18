@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Button from "./Button";
+import Textarea from "./Textarea";
 
 interface OutputReportProps {
   title: string;
@@ -61,12 +62,12 @@ export default function OutputReport({ title, generatedText, onTextChange }: Out
         </Button>
       </div>
 
-      <textarea
+      <Textarea
         value={generatedText}
         onChange={(e) => onTextChange(e.target.value)}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        className="w-full h-48 rounded-lg bg-muted-bg/50 hover:bg-muted-bg/75 focus:bg-background border border-transparent focus:border-accent/30 p-3.5 text-sm font-mono outline-none resize-y transition-colors leading-relaxed"
+        className="h-48 font-mono"
         placeholder="Report will appear here..."
       />
     </div>

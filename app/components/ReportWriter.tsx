@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import TemplateEditor, { ReportTemplate } from "./TemplateEditor";
 import OutputReport from "./OutputReport";
 import Button from "./Button";
+import Textarea from "./Textarea";
 import { parseUpdatePoints, scanInfoPlaceholders, generateReport } from "../utils/reportParser";
 
 const DEFAULT_TEMPLATES: ReportTemplate[] = [
@@ -191,13 +192,13 @@ export default function ReportWriter() {
               <span className="text-sm font-semibold tracking-tight text-foreground">1. Paste Update Points</span>
               <span className="text-2xs text-muted">{cleanPoints.length} points detected</span>
             </div>
-            <textarea
+            <Textarea
               value={rawInput}
               onChange={(e) => {
                 setRawInput(e.target.value);
                 handleRegenerateAll(); // reset manual edits when points list changes
               }}
-              className="w-full h-64 rounded-lg bg-muted-bg/50 focus:bg-background border border-transparent focus:border-accent/30 p-3.5 text-sm outline-none resize-y transition-colors leading-relaxed"
+              className="h-64"
               placeholder="Paste your points here...&#10;- Learned react native layouts&#10;- Connected database"
             />
             <div className="mt-2 text-3xs text-muted flex items-center gap-1">

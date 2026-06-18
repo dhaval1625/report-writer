@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Button from "./Button";
+import Textarea from "./Textarea";
 
 export interface ReportTemplate {
   id: string;
@@ -222,10 +223,10 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
                 <span>Template Format</span>
                 <span className="text-2xs text-accent normal-case font-normal">Auto-saves changes</span>
               </label>
-              <textarea
+              <Textarea
                 value={currentTemplate.templateText}
                 onChange={(e) => updateCurrentTemplate({ templateText: e.target.value })}
-                className="w-full h-32 rounded-lg border border-card-border bg-background p-3 text-sm font-mono outline-none focus:border-accent resize-y"
+                className="h-32 border border-card-border bg-background font-mono"
                 placeholder="Today's Work Summary ({{date:DD MMM YYYY}})\n\n{{points}}\n\nSigning off!"
               />
             </div>
