@@ -189,7 +189,7 @@ export default function ReportWriter() {
           {/* Raw Points Editor */}
           <div className="rounded-2xl border border-card-border bg-card-bg p-5 shadow-sm">
             <div className="flex items-center justify-between mb-3 border-b border-card-border/50 pb-2">
-              <span className="text-sm font-semibold tracking-tight text-foreground">1. Paste Update Points</span>
+              <span className="text-sm font-semibold tracking-tight text-foreground">Update Points Input</span>
               <span className="text-2xs text-muted">{cleanPoints.length} points detected</span>
             </div>
             <Textarea
@@ -199,7 +199,7 @@ export default function ReportWriter() {
                 handleRegenerateAll(); // reset manual edits when points list changes
               }}
               className="h-64"
-              placeholder="Paste your points here...&#10;- Learned react native layouts&#10;- Connected database"
+              placeholder="Enter your points here..."
             />
             <div className="mt-2 text-3xs text-muted flex items-center gap-1">
               <span>💡 Bullets and lists are automatically formatted based on active templates.</span>
@@ -210,8 +210,7 @@ export default function ReportWriter() {
           {detectedInfoKeys.length > 0 && (
             <div className="rounded-2xl border border-card-border bg-card-bg p-5 shadow-sm">
               <div className="flex items-center justify-between mb-3 border-b border-card-border/50 pb-2">
-                <span className="text-sm font-semibold tracking-tight text-foreground">2. Add Additional Information</span>
-                <span className="text-3xs text-muted uppercase font-bold tracking-wider">Dynamic Prompts</span>
+                <span className="text-sm font-semibold tracking-tight text-foreground">Add Additional Information</span>
               </div>
               <div className="flex flex-col gap-4">
                 {detectedInfoKeys.map((key) => (
@@ -224,7 +223,7 @@ export default function ReportWriter() {
                         handleInfoChange(key, e.target.value);
                         handleRegenerateAll(); // reset overrides
                       }}
-                      placeholder={`Enter ${key}...`}
+                      placeholder={`Enter ${key}`}
                       className="w-full rounded-lg border border-card-border bg-background px-3.5 py-2 text-sm outline-none focus:border-accent"
                     />
                   </div>
