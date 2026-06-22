@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import TemplateEditor, { ReportTemplate } from "./TemplateEditor";
 import OutputReport from "./OutputReport";
 import Button from "./Button";
@@ -43,6 +43,16 @@ export default function ReportWriter() {
   
   // Track manual edits made to generated reports
   const [editedReports, setEditedReports] = useState<Record<string, string>>({});
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleClearInput = () => {
+    setRawInput("");
+    handleRegenerateAll();
+    if (textareaRef.current) {
+      textareaRef.current.focus();
+    }
+  };
 
   // Hydration fix & load from local storage
   useEffect(() => {
@@ -190,9 +200,27 @@ export default function ReportWriter() {
           <div className="rounded-2xl border border-card-border bg-card-bg p-5 shadow-sm">
             <div className="flex items-center justify-between mb-3 border-b border-card-border/50 pb-2">
               <span className="text-sm font-semibold tracking-tight text-foreground">Update Points Input</span>
-              <span className="text-2xs text-muted">{cleanPoints.length} points detected</span>
+              <div className="flex items-center gap-2.5">
+                <span className="text-2xs text-muted">{cleanPoints.length} points detected</span>
+                {rawInput && (
+                  <>
+                    <span className="h-3 w-px bg-card-border/50" />
+                    <Button
+                      onClick={handleClearInput}
+                      className="text-xs font-medium text-muted hover:text-red-400 transition-colors flex items-center gap-1 focus:outline-none cursor-pointer"
+                      title="Clear points and focus textarea"
+                    >
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      Clear
+                    </Button>
+                  </>
+                )}
+              </div>
             </div>
             <Textarea
+              ref={textareaRef}
               value={rawInput}
               onChange={(e) => {
                 setRawInput(e.target.value);
