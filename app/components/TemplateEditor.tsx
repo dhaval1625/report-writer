@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "./Button";
 import Textarea from "./Textarea";
+import ConfirmModal from "./ConfirmModal";
 
 export interface ReportTemplate {
   id: string;
@@ -39,6 +40,7 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
   const [selectedTemplateId, setSelectedTemplateId] = useState<string>(templates[0]?.id || "");
   const [isCreating, setIsCreating] = useState(false);
   const [newName, setNewName] = useState("");
+  const [deletingTemplate, setDeletingTemplate] = useState<ReportTemplate | null>(null);
 
   const currentTemplate = templates.find((t) => t.id === selectedTemplateId);
 
@@ -164,7 +166,7 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleDeleteTemplate(t.id);
+                      setDeletingTemplate(t);
                     }}
                     className="p-1 text-muted hover:text-red-500 rounded-md hover:bg-muted-bg/50"
                   >
@@ -248,6 +250,29 @@ export default function TemplateEditor({ templates, onChange }: TemplateEditorPr
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deletingTemplate !== null}
+        onClose={() => setDeletingTemplate(null)}
+        onConfirm={() => {
+          if (deletingTemplate) {
+            handleDeleteTemplate(deletingTemplate.id);
+            setDeletingTemplate(null);
+          }
+        }}
+        title="Delete Template"
+        message={
+          deletingTemplate && (
+            <span>
+              Are you sure you want to delete the template <span className="font-semibold text-foreground">&ldquo;{deletingTemplate.name}&rdquo;</span>? This will permanently remove this template configuration and cannot be undone.
+            </span>
+          )
+        }
+        confirmText="Delete Template"
+        cancelText="Cancel"
+        variant="danger"
+      />
     </div>
   );
 }
