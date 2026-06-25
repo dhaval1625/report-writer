@@ -24,18 +24,18 @@ const DEFAULT_TEMPLATES: ReportTemplate[] = [
   }
 ];
 
-const DEFAULT_INPUT = `- Learned and implement react native layout and stack
-- Learn about react native expo status bar
-- Learn how navigation works in react native with Link component
-- Refer convex database documentation
-- Learn about ACID database`;
+const DEFAULT_INPUT = `- Completed implementation of the user onboarding flow
+- Fixed UI layout alignments on the settings dashboard
+- Participated in the team sync meeting to discuss sprint goals
+- Researched performance optimizations for databases
+- Documented API endpoints for the new services`;
 
 export default function ReportWriter() {
   const [isMounted, setIsMounted] = useState(false);
   const [rawInput, setRawInput] = useState(DEFAULT_INPUT);
   const [templates, setTemplates] = useState<ReportTemplate[]>(DEFAULT_TEMPLATES);
   const [infoValues, setInfoValues] = useState<Record<string, string>>({
-    "Ticket ID": "SVMAPP-546",
+    "Ticket ID": "JIRA-123",
   });
   const [reportDate, setReportDate] = useState<string>(
     new Date().toISOString().split("T")[0]
