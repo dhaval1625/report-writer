@@ -46,6 +46,7 @@ export default function TemplateEditor({
   );
   const [isCreating, setIsCreating] = useState(false);
   const [newName, setNewName] = useState('');
+  const [defaultName, setDefaultName] = useState('');
   const [deletingTemplate, setDeletingTemplate] =
     useState<ReportTemplate | null>(null);
 
@@ -284,6 +285,16 @@ export default function TemplateEditor({
                 className="h-32 border border-card-border bg-background font-mono"
                 placeholder="Today's Work Summary ({{date:DD MMM YYYY}})\n\n{{points}}\n\nSigning off!"
               />
+              <form>
+                <input
+                  value={defaultName}
+                  onChange={(e) => {
+                    if (e.target.value.length) {
+                      setDefaultName(e.target.value);
+                    }
+                  }}
+                />
+              </form>
             </div>
 
             {/* Quick cheat sheet */}
