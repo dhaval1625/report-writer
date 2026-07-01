@@ -41,6 +41,12 @@ export default function ReportWriter() {
     new Date().toISOString().split("T")[0]
   );
   
+  // Custom points numbering settings
+  const [listStyle, setListStyle] = useState<"bullet" | "numbered">("bullet");
+  const [numberBaseInput, setNumberBaseInput] = useState<string>("10");
+  const [numberBase, setNumberBase] = useState<number>(10);
+  const [baseError, setBaseError] = useState<string | null>(null);
+
   // Track manual edits made to generated reports
   const [editedReports, setEditedReports] = useState<Record<string, string>>({});
 
@@ -54,12 +60,49 @@ export default function ReportWriter() {
     }
   };
 
+  // Input Validation Logic
+  const validateInput = (value: string): { isValid: boolean; errorType: "empty" | "not_a_number" | "out_of_range" | null } => {
+    const trimmed = value.trim();
+    if (!trimmed) {
+      return { isValid: false, errorType: "empty" };
+    }
+    const baseNum = Number(trimmed);
+    if (isNaN(baseNum)) {
+      return { isValid: false, errorType: "not_a_number" };
+    }
+    if (!Number.isInteger(baseNum) || baseNum < 2 || baseNum > 36) {
+      return { isValid: false, errorType: "out_of_range" };
+    }
+    return { isValid: true, errorType: null };
+  };
+
+  const handleBaseChange = (value: string) => {
+    setNumberBaseInput(value);
+    const validation = validateInput(value);
+    
+    if (validation.isValid) {
+      setBaseError(null);
+      setNumberBase(Number(value.trim()));
+      handleRegenerateAll(); // reset overrides
+    } else {
+      if (validation.errorType === "empty") {
+        setBaseError("Base cannot be empty. Please enter an integer between 2 and 36.");
+      } else if (validation.errorType === "not_a_number") {
+        setBaseError("Base must be a valid integer numeric value.");
+      } else if (validation.errorType === "out_of_range") {
+        setBaseError("Base must be a whole integer between 2 and 36.");
+      }
+    }
+  };
+
   // Hydration fix & load from local storage
   useEffect(() => {
     const timer = setTimeout(() => {
       const savedInput = localStorage.getItem("rw_raw_input");
       const savedTemplates = localStorage.getItem("rw_templates");
       const savedInfo = localStorage.getItem("rw_info_values");
+      const savedListStyle = localStorage.getItem("rw_list_style");
+      const savedNumberBase = localStorage.getItem("rw_number_base");
       
       if (savedInput) setRawInput(savedInput);
       if (savedTemplates) {
@@ -74,6 +117,16 @@ export default function ReportWriter() {
           setInfoValues(JSON.parse(savedInfo));
         } catch (e) {
           console.error("Error parsing saved info values", e);
+        }
+      }
+      if (savedListStyle === "bullet" || savedListStyle === "numbered") {
+        setListStyle(savedListStyle as "bullet" | "numbered");
+      }
+      if (savedNumberBase) {
+        setNumberBaseInput(savedNumberBase);
+        const baseNum = Number(savedNumberBase);
+        if (!isNaN(baseNum) && Number.isInteger(baseNum) && baseNum >= 2 && baseNum <= 36) {
+          setNumberBase(baseNum);
         }
       }
       setIsMounted(true);
@@ -97,6 +150,16 @@ export default function ReportWriter() {
     if (!isMounted) return;
     localStorage.setItem("rw_info_values", JSON.stringify(infoValues));
   }, [infoValues, isMounted]);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    localStorage.setItem("rw_list_style", listStyle);
+  }, [listStyle, isMounted]);
+
+  useEffect(() => {
+    if (!isMounted) return;
+    localStorage.setItem("rw_number_base", numberBaseInput);
+  }, [numberBaseInput, isMounted]);
 
   // Clean points from raw text
   const cleanPoints = parseUpdatePoints(rawInput);
@@ -134,6 +197,8 @@ export default function ReportWriter() {
         infoValues,
         bulletPrefix: t.bulletPrefix,
         dateObj,
+        listStyle,
+        numberBase,
       });
     }
   });
@@ -231,6 +296,95 @@ export default function ReportWriter() {
             />
             <div className="mt-2 text-3xs text-muted flex items-center gap-1">
               <span>💡 Bullets and lists are automatically formatted based on active templates.</span>
+            </div>
+          </div>
+
+          {/* List Formatting Options Panel */}
+          <div className="rounded-2xl border border-card-border bg-card-bg p-5 shadow-sm transition-all duration-300">
+            <div className="flex items-center justify-between mb-3 border-b border-card-border/50 pb-2">
+              <span className="text-sm font-semibold tracking-tight text-foreground">List Formatting Options</span>
+            </div>
+            <div className="flex flex-col gap-4">
+              {/* Toggle Style */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-medium text-foreground/80">List Style</label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setListStyle("bullet");
+                      handleRegenerateAll();
+                    }}
+                    className={`flex-1 py-2 px-3 text-xs font-semibold rounded-lg border cursor-pointer transition-all duration-200 ${
+                      listStyle === "bullet"
+                        ? "bg-accent/10 border-accent/30 text-accent font-bold"
+                        : "bg-background border-card-border text-muted hover:text-foreground"
+                    }`}
+                  >
+                    Bullet Points
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setListStyle("numbered");
+                      handleRegenerateAll();
+                    }}
+                    className={`flex-1 py-2 px-3 text-xs font-semibold rounded-lg border cursor-pointer transition-all duration-200 ${
+                      listStyle === "numbered"
+                        ? "bg-accent/10 border-accent/30 text-accent font-bold"
+                        : "bg-background border-card-border text-muted hover:text-foreground"
+                    }`}
+                  >
+                    Numbered List
+                  </button>
+                </div>
+              </div>
+
+              {/* Number Base Selector */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-medium text-foreground/80">Number Base</label>
+                  {listStyle !== "numbered" && (
+                    <span className="text-3xs text-muted font-normal">(Enable Numbered List to apply)</span>
+                  )}
+                </div>
+                <input
+                  type="text"
+                  value={numberBaseInput}
+                  onChange={(e) => handleBaseChange(e.target.value)}
+                  placeholder="e.g. 10 (decimal), 16 (hex), 2 (binary)"
+                  disabled={listStyle !== "numbered"}
+                  className={`w-full rounded-lg border px-3.5 py-2 text-sm outline-none transition-all duration-200 ${
+                    listStyle !== "numbered"
+                      ? "border-card-border/50 bg-background/50 text-muted/60 cursor-not-allowed"
+                      : baseError
+                        ? "border-red-500/80 bg-red-500/5 focus:border-red-500 text-foreground"
+                        : "border-card-border bg-background focus:border-accent text-foreground"
+                  }`}
+                />
+                
+                {/* Conditional User-facing Error Feedback */}
+                {listStyle === "numbered" && baseError && (
+                  <div className="flex items-start gap-1.5 text-2xs text-red-500 font-medium mt-1 transition-all duration-300">
+                    <svg className="h-3.5 w-3.5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span>{baseError}</span>
+                  </div>
+                )}
+                
+                {listStyle === "numbered" && !baseError && (
+                  <span className="text-3xs text-muted mt-1 leading-normal transition-all duration-200">
+                    Preview numbering: {
+                      cleanPoints.length > 0
+                        ? Array.from({ length: Math.min(cleanPoints.length, 3) })
+                            .map((_, i) => `${(i + 1).toString(numberBase)}.`)
+                            .join(", ") + (cleanPoints.length > 3 ? ", ..." : "")
+                        : `1. (base ${numberBase})`
+                    }
+                  </span>
+                )}
+              </div>
             </div>
           </div>
 

@@ -83,12 +83,16 @@ export function generateReport({
   infoValues = {},
   bulletPrefix = "➤",
   dateObj = new Date(),
+  listStyle = "bullet",
+  numberBase = 10,
 }: {
   templateStr: string;
   points: string[];
   infoValues?: Record<string, string>;
   bulletPrefix?: string;
   dateObj?: Date;
+  listStyle?: "bullet" | "numbered";
+  numberBase?: number;
 }): string {
   let output = templateStr;
 
@@ -107,6 +111,15 @@ export function generateReport({
   // 3. Replace points placeholder: {{points:PREFIX}} or {{points}}
   const pointsRegex = /\{\{points(?::([^\}]+))?\}\}/g;
   output = output.replace(pointsRegex, (_, customPrefix) => {
+    if (listStyle === "numbered") {
+      return points
+        .map((pt, idx) => {
+          const numStr = (idx + 1).toString(numberBase);
+          return `${numStr}. ${pt}`;
+        })
+        .join("\n");
+    }
+
     const prefixToUse = customPrefix !== undefined ? customPrefix : bulletPrefix;
     return points
       .map(pt => `${prefixToUse}${prefixToUse ? " " : ""}${pt}`)
